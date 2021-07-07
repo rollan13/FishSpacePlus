@@ -1,0 +1,4 @@
+minimum_fishable_ratio1=0.1
+minimum_fishable_ratio2=0.1
+threshold=0
+fisher_type=closest

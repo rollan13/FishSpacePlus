@@ -1,0 +1,11 @@
+electron-packager . --overwrite --asar --platform=win32 --arch=x64 --prune=true --out=release-builds --vers
+ion-string.CompanyName='Pointwest Innovations Corporation' --version-string.FileDescription='CCRES FishSPACE' --version-string.ProductName='FishSPACE'
+
+electron-packager . FishSPACE FishSPACE --overwrite --asar --platform=win32 --arch=x64 --icon=FishSPACE/gui/icons/CCRES_Icon_128x128.ico --prune=true --out=release-builds 
+--version-string.CompanyName='Pointwest Innovations Corporation' --version-string.FileDescription='CCRES FishSPACE' --version-string.ProductName="FishSPACE"
+
+//FOR PACKAGER
+asar pack FishSPACE app.asar
+
+//TO BUILD C++
+node-gyp rebuild --target=3.0.9 --arch=x64 --dist-url=https://electronjs.org/headers

@@ -1,0 +1,10 @@
+growth_rate[0]=0.0048
+spillover_rate[0]=0.1
+spillover_threshold[0]=0.9
+fecundity[0]=1
+recruitment_rate[0]=1
+growth_rate[1]=0.009
+spillover_rate[1]=0.1
+spillover_threshold[1]=0.9
+fecundity[1]=1
+recruitment_rate[1]=1

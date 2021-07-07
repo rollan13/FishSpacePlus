@@ -1,0 +1,130 @@
+#include <node.h>
+#include <v8.h>
+#include <uv.h>
+#include "fishing_agent.h"
+#include <string>
+#include <iostream>
+#include <vector>
+#include <algorithm>
+#include <chrono>
+#include <thread>
+
+using namespace v8;
+
+class fisher_inputs {
+public:
+	int initial_posx;
+	int initial_posy;
+	std::vector<std::vector<double>> baseline;
+	std::vector<std::vector<double>> fish_weights;
+	std::vector<std::vector<double>> bias_matrix;
+	std::vector<std::vector<double>> protection_mask;
+};
+
+fisher_inputs parse_fisher(Isolate *, const Handle<Object> fisher_obj);
+
+fisher_inputs parse_fisher(Isolate * isolate, const Handle<Object> fisher_obj) {
+
+	fisher_inputs inputs;
+	int outerArraycount;
+
+	// Handle <Object> fisher_obj = Handle <Object> ::Cast(args[0]);
+	Handle <Value> posx = fisher_obj->Get(String::NewFromUtf8(isolate, "initial_posx"));
+	Handle <Value> posy = fisher_obj->Get(String::NewFromUtf8(isolate, "initial_posy"));
+
+	inputs.initial_posx = posx->NumberValue();
+	inputs.initial_posy = posy->NumberValue();
+
+	Handle <Array> baselineArray = Handle<Array>::Cast(fisher_obj->Get(String::NewFromUtf8(isolate, "baseline")));
+	outerArraycount = baselineArray->Length();
+	for (int i = 0; i < outerArraycount; i++) {
+		Handle <Array> innerBaselineArray = Handle<Array>::Cast(Handle<Array>::Cast(baselineArray->Get(i)));
+		int innerArrayCount = innerBaselineArray->Length();
+		std::vector<double> store;
+		for (int i = 0; i < innerArrayCount; i++) {
+			double innerArrayInstance = Handle < Array
+					> ::Cast(innerBaselineArray->Get(i))->NumberValue();
+			store.push_back(innerArrayInstance);
+		}
+		inputs.baseline.push_back(store);
+	}
+
+	Handle <Array> fishWeightsArray = Handle<Array>::Cast(fisher_obj->Get(String::NewFromUtf8(isolate, "fish_weights")));
+	outerArraycount = fishWeightsArray->Length();
+	for (int i = 0; i < outerArraycount; i++) {
+		Handle <Array> innerfishWeightArray = Handle<Array>::Cast(Handle<Array>::Cast(fishWeightsArray->Get(i)));
+		int innerArrayCount = innerfishWeightArray->Length();
+		std::vector<double> store;
+		for (int i = 0; i < innerArrayCount; i++) {
+			double innerArrayInstance = Handle < Array
+					> ::Cast(innerfishWeightArray->Get(i))->NumberValue();
+			store.push_back(innerArrayInstance);
+		}
+		inputs.fish_weights.push_back(store);
+	}
+
+	Handle <Array> biasArray = Handle<Array>::Cast(fisher_obj->Get(String::NewFromUtf8(isolate, "bias_matrix")));
+	outerArraycount = biasArray->Length();
+	for (int i = 0; i < outerArraycount; i++) {
+		Handle<Array> innerBiasArray = Handle <Array>::Cast(Handle<Array>::Cast(biasArray->Get(i)));
+		int innerArrayCount = innerBiasArray->Length();
+		std::vector<double> store;
+		for (int i = 0; i < innerArrayCount; i++) {
+			double innerArrayInstance = Handle<Array>::Cast(innerBiasArray->Get(i))->NumberValue();
+			store.push_back(innerArrayInstance);
+		}
+		inputs.bias_matrix.push_back(store);
+	}
+
+	Handle <Array> protectionMaskArray = Handle<Array>::Cast(fisher_obj->Get(String::NewFromUtf8(isolate, "protection_mask")));
+	outerArraycount = protectionMaskArray->Length();
+	for (int i = 0; i < outerArraycount; i++) {
+		Handle < Array > innerProtectionMaskArray = Handle < Array
+				> ::Cast(Handle < Array > ::Cast(protectionMaskArray->Get(i)));
+		int innerArrayCount = innerProtectionMaskArray->Length();
+		std::vector<double> store;
+		for (int i = 0; i < innerArrayCount; i++) {
+			double innerArrayInstance = Handle < Array
+					> ::Cast(innerProtectionMaskArray->Get(i))->NumberValue();
+			store.push_back(innerArrayInstance);
+		}
+		inputs.protection_mask.push_back(store);
+	}
+
+	return inputs;
+}
+
+void fish_out_shim(const v8::FunctionCallbackInfo<v8::Value>& args) {
+
+	Isolate* isolate = args.GetIsolate();
+	//Accept values from front-end as v8 data types then convert them to native C++ data types (parse_fisher() does the conversion)
+	fisher_inputs fisher = parse_fisher(isolate, Handle<Object>::Cast(args[0]));
+
+	//Instantiate Fisher class to access fish_out method from fishing_agent.cpp
+	fishing::Fisher*  fishes = new fishing::Fisher();
+
+	//Invoke fish_out method then pass the native C++ data types
+	std::vector<std::vector<double>> fisherResult = fishes->fish_out(fisher.initial_posx, fisher.initial_posy, fisher.baseline, fisher.fish_weights, fisher.bias_matrix, fisher.protection_mask);
+
+	//Since the expected return is an Array of arrays of doubles (or vector of vectors of doubles), convert them back to v8 array data type then return to front-end
+	Local<Array> finishedArray = Array::New(isolate);
+
+	for(int i = 0;i < fisherResult.size(); i++){
+		Local<Array> anotherInstance = Array::New(isolate);
+		int innerArrayCount = fisherResult[i].size();
+		for(int j = 0;j < innerArrayCount; j++){
+			double innerArrayValue = fisherResult[i][j];
+			anotherInstance->Set(j, Number::New(isolate, innerArrayValue));
+		}
+		finishedArray->Set(i, anotherInstance);
+	}
+
+	//Return values back to front-end
+	args.GetReturnValue().Set(finishedArray);
+}
+
+void init(Handle<Object> exports, Handle<Object> module) {
+	NODE_SET_METHOD(exports, "fish_out", fish_out_shim);
+}
+
+NODE_MODULE(fishing_agent, init)

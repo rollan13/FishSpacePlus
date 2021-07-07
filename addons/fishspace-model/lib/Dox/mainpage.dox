@@ -1,0 +1,52 @@
+/*! \mainpage Fish Space Project
+ *
+ * \section intro_sec Introduction
+ *
+ * This C++ project has two namespaces: fishspace and fishing. The fishing namespace contain the class of fishers that can be created.
+ * The fishspace namespace contain all other classes, methods, functions, type definitions, structures and others necessary for the fishspace model
+ * to work and interface with the front-end GUI written in Javascript using NodeJS framework.
+ *
+ * \subsection prereq_sec Pre-requisites for Building and Running the Project
+ *
+ * 1. Download and install Microsoft Visual Studio version 2017 [https://visualstudio.microsoft.com/vs/older-downloads/](https://visualstudio.microsoft.com/vs/older-downloads/)
+ * 2. Download and install Electron Node.js version 12.3.1 [https://nodejs.org/en/blog/release/v12.3.1/](https://nodejs.org/en/blog/release/v12.3.1/)
+ * 3. Download and install Python version 2.7 [https://www.python.org/download/releases/2.7/](https://www.python.org/download/releases/2.7/)
+ * 4. Download the source codes from GIT [https://github.com/katchatore/FishSPACE2](https://github.com/katchatore/FishSPACE2)
+ * 
+ * NOTE: There are more installation instructions in the GIT mainpage of FISHSPACE2 in the above link
+ *
+ * \subsection setup_sec Set-up NodeJS
+ *
+ * 1. Extract the downloaded source codes from GIT to a project folder such as C:\\Users\\Username\\FishSPACE2-master\\
+ * 2. Open a command prompt/shell as Administrator and go to the project folder (i.e. cd C:\\Users\\Username\\FishSPACE2-master\\)
+ * 3. From the project folder, run 'npm install' (i.e. C:\\Users\\Username\\FishSPACE2-master\\> npm install)
+ * 4. From the project folder, install a global copy of node-gyp by running 'npm install node-gyp -g' (C:\\Users\\Username\\FishSPACE2-master\\> npm install node-gyp -g)
+ * 
+ * \subsection buildfrontend_sec Build the front-end interface in NodeJS
+ * 1. Open a Windows command prompt/shell as Administrator
+ * 2. Go to the project folder/directory (i.e. cd C:\\Users\\Username\\FishSPACE2-master\\)
+ * 3. From the project folder run the command below.
+ *<br>
+ *    npm run-script build-webpack
+ *<br>
+ *    Example:
+ *    C:\\Users\\Username\\FishSPACE2-master>npm run-script build-webpack
+ *
+ * \subsection buildcpp_sec Build the Visual Studio C++ source codes
+ * To build the C++ project:
+ * 1. Open a Windows command prompt/shell as Administrator
+ * 2. From the project folder go to the \\addons\\fishspace-model\\ directory (i.e. cd C:\\Users\\Username\\FishSPACE2-master\\addons\\fishspace-model)
+ * 3. If running in Windows 64-bit, run the command below:
+ *<br>
+ *    node-gyp rebuild --target=3.0.9 --arch=x64 --dist-url=https://electronjs.org/headers
+ *<br>
+ *    Example: C:\\Users\\Username\\FishSPACE2-master\\addons\\fishspace-model\\node-gyp rebuild --target=3.0.9 --arch=x64 --dist-url=https://electronjs.org/headers
+ *
+ * \subsection runtheproject_sec Running the project with GUI
+ * 1. Open a Windows command prompt/shell as Administrator
+ * 2. Go to the project folder (i.e. cd C:\\Users\\Username\\FishSPACE2-master\\)
+ * 3. From the project folder, run the command 'npm start'
+ *<br>
+ *    Example: C:\\Users\\Username\\FishSPACE2-master\\npm start
+ * 4. In the GUI, load the CCRES file and click the run button
+ */

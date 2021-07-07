@@ -1,0 +1,15 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\addons",
+    "\\addons\\fishspace-model",
+    "\\addons\\fishspace-model\\lib",
+    "\\app",
+    "\\gui",
+    "\\gui\\components",
+    "\\gui\\scripts",
+    "\\gui\\scripts\\common"
+  ],
+  "SelectedNode": "\\addons\\fishspace-model\\lib\\model.h",
+  "PreviewInSolutionExplorer": false
+}
